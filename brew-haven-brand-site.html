@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brew Haven — Your world, one warm cup at a time</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Nunito:wght@400;500;700;800;900&display=swap');
+
+  :root{
+    --cream:#F3E6D3; --cream-lt:#FBF3E4; --cream-dk:#E7D6B8;
+    --espresso:#3F2417; --brown:#6E4429; --pumpkin:#C1652C;
+    --pumpkin-dk:#9C4C1F; --caramel:#D99A56; --line:rgba(63,36,23,0.18);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ font-family:'Nunito',sans-serif; color:var(--espresso); background:#fff; line-height:1.55; }
+  a{ color:inherit; text-decoration:none; }
+  img,svg{ display:block; max-width:100%; }
+  .wrap{ max-width:1240px; margin:0 auto; padding:0 48px; }
+  h1,h2,h3{ font-family:'Fraunces',serif; }
+  section{ position:relative; }
+
+  /* ============ NAV ============ */
+  header{ position:sticky; top:0; z-index:100; background:rgba(251,243,228,0.95); backdrop-filter:blur(8px); border-bottom:1.5px solid var(--line); }
+  nav.wrap{ display:flex; align-items:center; justify-content:space-between; padding-top:16px; padding-bottom:16px; }
+  .brandmark{ display:flex; align-items:center; }
+  .brandmark svg{ width:42px; height:42px; margin-right:11px; }
+  .brandmark .bname{ font-weight:700; font-size:21px; }
+
+  .navlinks{ display:flex; align-items:center; }
+  .navlinks > li{ position:relative; list-style:none; margin-right:34px; }
+  .navlinks > li:last-child{ margin-right:0; }
+  .navlinks > li > a{ font-weight:800; font-size:15px; padding:10px 0; display:inline-block; }
+  .navlinks > li.has-drop > a::after{ content:"▾"; font-size:11px; margin-left:6px; opacity:.7; }
+
+  .megamenu{
+    position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(8px);
+    width:560px; background:var(--cream-lt); border:1.5px solid var(--line); border-radius:6px;
+    box-shadow:0 22px 44px rgba(63,36,23,0.18);
+    padding:28px; display:grid; grid-template-columns:1fr 1fr 1.1fr; gap:26px;
+    opacity:0; visibility:hidden; transition:opacity .18s ease, transform .18s ease;
+  }
+  .navlinks > li.has-drop:hover .megamenu{ opacity:1; visibility:visible; transform:translateX(-50%) translateY(0); }
+  .megamenu h4{ font-family:'Nunito',sans-serif; font-size:12px; font-weight:800; color:var(--pumpkin-dk); letter-spacing:.03em; margin-bottom:12px; }
+  .megamenu a{ display:block; font-size:14.5px; font-weight:700; padding:6px 0; }
+  .megamenu a:hover{ color:var(--pumpkin-dk); }
+  .megamenu .feature{ background:var(--cream-dk); border-radius:5px; padding:16px; }
+  .megamenu .feature svg{ width:56px; height:56px; margin-bottom:10px; }
+  .megamenu .feature p{ font-size:13px; color:var(--brown); margin-top:4px; }
+
+  .nav-cta{ background:var(--pumpkin); color:var(--cream-lt); font-weight:800; padding:11px 24px; border-radius:3px; font-size:14.5px; white-space:nowrap; }
+
+  /* ============ HERO ============ */
+  .hero{ position:relative; min-height:640px; display:flex; align-items:flex-end; overflow:hidden; background:linear-gradient(180deg,#7C4A2A 0%, #4A2C1B 100%); }
+  .hero-bg{ position:absolute; inset:0; background-image:url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1800&q=85'); background-size:cover; background-position:center; }
+  .hero-bg svg{ width:100%; height:100%; opacity:.2; }
+  .hero-scrim{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(43,24,14,0.15) 0%, rgba(30,16,9,0.82) 100%); }
+  .hero-inner{ position:relative; z-index:2; padding:64px 48px 72px; max-width:1240px; margin:0 auto; width:100%; }
+  .hero-greet{ color:var(--caramel); font-weight:800; font-size:14px; letter-spacing:.04em; margin-bottom:14px; }
+  .hero h1{ color:var(--cream-lt); font-size:58px; font-weight:600; line-height:1.1; max-width:680px; }
+  .hero h1 em{ font-style:italic; color:var(--caramel); font-weight:500; }
+  .hero p{ color:#E7D3BC; font-size:18px; max-width:480px; margin-top:20px; }
+  .hero-ctas{ display:flex; margin-top:32px; }
+  .btn-primary{ background:var(--pumpkin); color:var(--cream-lt); font-weight:800; padding:16px 30px; border-radius:3px; font-size:15.5px; box-shadow:0 6px 0 var(--pumpkin-dk); margin-right:16px; }
+  .btn-ghost-lt{ border:2px solid var(--cream-lt); color:var(--cream-lt); font-weight:700; padding:14px 28px; border-radius:3px; font-size:15.5px; }
+
+  /* ============ RANGE GRID ============ */
+  .section-head{ max-width:620px; margin:0 auto 48px; text-align:center; }
+  .section-head h2{ font-size:36px; font-weight:600; }
+  .section-head p{ color:var(--brown); margin-top:14px; font-size:16.5px; }
+
+  .range{ padding:100px 0 90px; }
+  .range-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  .range-card{ background:var(--cream-dk); border-radius:6px; padding:30px 24px; text-align:center; transition:transform .2s ease; }
+  .range-card:hover{ transform:translateY(-6px); }
+  .range-card svg{ width:74px; height:74px; margin:0 auto 18px; }
+  .range-card h3{ font-size:19px; font-weight:600; }
+  .range-card p{ font-size:14px; color:var(--brown); margin-top:8px; }
+
+  /* ============ RECIPES ============ */
+  .recipes{ background:var(--cream-dk); padding:100px 0; }
+  .recipe-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .recipe-card{ background:var(--cream-lt); border-radius:6px; overflow:hidden; box-shadow:0 10px 26px rgba(63,36,23,0.08); }
+  .recipe-art{ height:190px; display:flex; align-items:center; justify-content:center; background-size:cover; background-position:center; position:relative; }
+  .recipe-art::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(63,36,23,.05),rgba(63,36,23,.38)); }
+  .recipe-art svg{ width:130px; height:130px; position:relative; z-index:1; opacity:0; }
+  .recipe-card:nth-child(1) .recipe-art{ background-image:url('https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=900&q=85'); }
+  .recipe-card:nth-child(2) .recipe-art{ background-image:url('https://images.unsplash.com/photo-1517701604599-bb29b565 ಮರ?auto=format&fit=crop&w=900&q=85'); }
+  .recipe-card:nth-child(3) .recipe-art{ background-image:url('https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=900&q=85'); }
+  .recipe-card:nth-child(2) .recipe-art{ background-image:url('https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=85'); }
+  .recipe-body{ padding:22px 24px 26px; }
+  .recipe-body h3{ font-size:20px; font-weight:600; }
+  .recipe-body p{ font-size:14.5px; color:var(--brown); margin-top:8px; }
+  .recipe-meta{ display:flex; margin-top:16px; font-size:12.5px; font-weight:800; color:var(--pumpkin-dk); }
+  .recipe-meta span{ margin-right:18px; }
+
+  /* ============ STORY CARDS ============ */
+  .story{ padding:100px 0; }
+  .story-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; margin-top:50px; }
+  .story-card{ border:1.5px solid var(--line); border-radius:6px; padding:30px; }
+  .story-card .kicker{ font-size:12px; font-weight:800; color:var(--pumpkin-dk); letter-spacing:.03em; }
+  .story-card h3{ font-size:21px; font-weight:600; margin-top:10px; }
+  .story-card p{ font-size:14.5px; color:var(--brown); margin-top:10px; }
+  .story-card .rm{ display:inline-block; margin-top:16px; font-weight:800; font-size:14px; border-bottom:2px solid var(--pumpkin); }
+
+  /* ============ QUOTE ============ */
+  .quote{ background:var(--espresso); color:var(--cream-lt); padding:110px 0; text-align:center; }
+  .quote blockquote{ font-family:'Fraunces',serif; font-style:italic; font-weight:500; font-size:36px; line-height:1.35; max-width:820px; margin:0 auto; }
+  .quote cite{ display:block; margin-top:26px; font-style:normal; font-weight:800; color:var(--caramel); font-size:15px; }
+
+  /* ============ FINDER ============ */
+  .finder{ padding:100px 0; }
+  .finder-box{ background:var(--cream-dk); border-radius:10px; padding:60px; display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center; }
+  .finder h2{ font-size:32px; font-weight:600; }
+  .finder p{ color:var(--brown); margin-top:14px; font-size:16px; }
+  .finder-q{ margin-top:26px; }
+  .finder-q .qlabel{ font-weight:800; font-size:14.5px; margin-bottom:12px; }
+  .opt-row{ display:flex; flex-wrap:wrap; }
+  .opt{ border:2px solid var(--espresso); border-radius:30px; padding:10px 20px; font-weight:700; font-size:14px; margin-right:10px; margin-bottom:10px; cursor:pointer; background:transparent; }
+  .opt.sel{ background:var(--pumpkin); border-color:var(--pumpkin); color:var(--cream-lt); }
+  .finder-result{ background:var(--cream-lt); border-radius:8px; padding:32px; text-align:center; min-height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .finder-result svg{ width:88px; height:88px; margin-bottom:14px; }
+  .finder-result h3{ font-size:22px; font-weight:600; }
+  .finder-result p{ color:var(--brown); font-size:14px; margin-top:8px; max-width:280px; }
+
+  /* ============ VISIT ============ */
+  .visit{ padding:100px 0 110px; }
+  .visit .wrap{ display:grid; grid-template-columns:1fr 1fr; gap:60px; }
+  .visit h2{ font-size:36px; font-weight:600; }
+  .visit-row{ display:flex; justify-content:space-between; padding:16px 0; border-bottom:1.5px solid var(--line); font-size:15.5px; }
+  .visit-row .d{ font-weight:800; }
+  .mapcard{ background:var(--espresso); color:var(--cream-lt); border-radius:8px; padding:40px; display:flex; flex-direction:column; justify-content:space-between; }
+  .mapcard .addr{ font-family:'Fraunces',serif; font-size:22px; font-weight:600; }
+  .mapcard .sub{ margin-top:10px; color:#D9C6A9; font-size:14.5px; }
+  .mapcard .btn-primary{ margin-top:26px; align-self:flex-start; }
+
+  /* ============ FOOTER ============ */
+  footer{ background:var(--cream-dk); padding:64px 0 30px; }
+  .foot-top{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:44px; border-bottom:1.5px solid var(--line); }
+  .foot-brand .brandmark{ margin-bottom:14px; }
+  .foot-brand p{ font-size:14.5px; color:var(--brown); max-width:260px; }
+  .foot-social{ display:flex; margin-top:18px; }
+  .foot-social a{ width:36px; height:36px; border-radius:50%; border:1.5px solid var(--espresso); display:flex; align-items:center; justify-content:center; margin-right:10px; }
+  .foot-social svg{ width:16px; height:16px; }
+  .foot-col h4{ font-size:13px; font-weight:800; letter-spacing:.03em; margin-bottom:16px; }
+  .foot-col a{ display:block; font-size:14.5px; padding:6px 0; color:var(--brown); }
+  .foot-bottom{ display:flex; justify-content:space-between; padding-top:26px; font-size:13.5px; color:var(--brown); }
+
+  @media (max-width:980px){
+    .wrap{ padding:0 24px; }
+    .navlinks, .nav-cta{ display:none; }
+    .hero h1{ font-size:40px; }
+    .range-grid{ grid-template-columns:repeat(2,1fr); }
+    .recipe-grid{ grid-template-columns:1fr; }
+    .story-grid{ grid-template-columns:1fr; }
+    .finder-box{ grid-template-columns:1fr; padding:36px; }
+    .visit .wrap{ grid-template-columns:1fr; }
+    .foot-top{ grid-template-columns:1fr 1fr; row-gap:32px; }
+    .quote blockquote{ font-size:26px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="#top" class="brandmark">
+      <svg viewBox="0 0 500 500">
+        <circle cx="250" cy="250" r="228" fill="#F6ECDC" stroke="#4A2C1D" stroke-width="6"/>
+        <circle cx="250" cy="250" r="204" fill="none" stroke="#C1652C" stroke-width="3"/>
+        <path d="M 178 172 L 250 118 L 322 172" fill="none" stroke="#4A2C1D" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="195" y1="158" x2="195" y2="130" stroke="#4A2C1D" stroke-width="12" stroke-linecap="round"/>
+        <path d="M 232 190 C 224 172, 244 160, 236 142 C 230 130, 238 118, 250 112" fill="none" stroke="#C1652C" stroke-width="8" stroke-linecap="round"/>
+        <path d="M 250 112 C 258 104, 272 106, 276 116 C 280 128, 268 136, 258 134 C 250 132, 246 120, 250 112 Z" fill="#D99A56" stroke="#4A2C1D" stroke-width="3"/>
+        <path d="M 168 200 L 178 268 C 180 284, 194 296, 210 296 L 290 296 C 306 296, 320 284, 322 268 L 332 200 Z" fill="#7A4A2B" stroke="#4A2C1D" stroke-width="10" stroke-linejoin="round"/>
+        <ellipse cx="250" cy="200" rx="82" ry="14" fill="#E8CBA1" stroke="#4A2C1D" stroke-width="10"/>
+        <path d="M 332 214 C 362 214, 366 254, 336 258" fill="none" stroke="#4A2C1D" stroke-width="11" stroke-linecap="round"/>
+      </svg>
+      <span class="bname">Brew Haven</span>
+    </a>
+
+    <ul class="navlinks">
+      <li class="has-drop">
+        <a href="#range">Our Coffees</a>
+        <div class="megamenu">
+          <div>
+            <h4>HOT BREWS</h4>
+            <a href="#recipes">Espresso &amp; Lattes</a>
+            <a href="#recipes">House Drip</a>
+            <a href="#recipes">Cocoa &amp; Cream</a>
+          </div>
+          <div>
+            <h4>ICED &amp; SEASONAL</h4>
+            <a href="#recipes">Cold Brews</a>
+            <a href="#recipes">Pumpkin Spice Latte</a>
+            <a href="#recipes">Maple &amp; Caramel</a>
+          </div>
+          <div class="feature">
+            <svg viewBox="0 0 100 100"><path d="M25 35 L30 70 C31 80, 40 87, 50 87 L60 87 C70 87, 79 80, 80 70 L85 35 Z" fill="#F6ECDC" stroke="#3F2417" stroke-width="4"/><ellipse cx="55" cy="35" rx="30" ry="7" fill="#E8CBA1" stroke="#3F2417" stroke-width="4"/></svg>
+            <strong>Seasonal menu</strong>
+            <p>This month it's all pumpkin, cinnamon, and cream.</p>
+          </div>
+        </div>
+      </li>
+      <li class="has-drop">
+        <a href="#recipes">Recipes</a>
+        <div class="megamenu" style="width:460px; grid-template-columns:1fr 1fr;">
+          <div>
+            <h4>AT HOME</h4>
+            <a href="#recipes">Pumpkin Spice Latte</a>
+            <a href="#recipes">Cinnamon Dolce Cocoa</a>
+          </div>
+          <div class="feature" style="grid-column:2/3;">
+            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="#3F2417" stroke-width="4"/><path d="M50 24 C60 34, 60 44, 50 50 C40 56, 40 66, 50 76" stroke="#C1652C" stroke-width="4" fill="none"/></svg>
+            <strong>New this week</strong>
+            <p>Maple Cold Brew — five steps, five minutes.</p>
+          </div>
+        </div>
+      </li>
+      <li><a href="#story">Our Story</a></li>
+      <li><a href="#visit">Visit Us</a></li>
+    </ul>
+
+    <a href="#visit" class="nav-cta">Visit us today</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-bg">
+    <svg viewBox="0 0 1440 640" preserveAspectRatio="xMidYMax slice">
+      <rect width="1440" height="640" fill="#4A2C1B"/>
+      <g opacity="0.5">
+        <circle cx="180" cy="120" r="220" fill="#7A4A2B"/>
+        <circle cx="1300" cy="480" r="260" fill="#5B3520"/>
+      </g>
+      <g stroke="#8C6B4A" stroke-width="2" opacity="0.35">
+        <line x1="60" y1="-20" x2="20" y2="90"/>
+        <line x1="140" y1="-30" x2="95" y2="100"/>
+        <line x1="230" y1="-10" x2="190" y2="110"/>
+        <line x1="1260" y1="-20" x2="1220" y2="90"/>
+        <line x1="1340" y1="-30" x2="1300" y2="100"/>
+        <line x1="1400" y1="-10" x2="1360" y2="110"/>
+      </g>
+    </svg>
+  </div>
+  <div class="hero-scrim"></div>
+  <div class="hero-inner">
+    <div class="hero-greet" id="greet">Good afternoon</div>
+    <h1>Your world moves a <em>little slower</em> here.</h1>
+    <p>One good cup, a table by the window, and no reason to rush. That's the whole idea behind Brew Haven.</p>
+    <div class="hero-ctas">
+      <a href="#range" class="btn-primary">See what's brewing</a>
+      <a href="#visit" class="btn-ghost-lt">Visit us today</a>
+    </div>
+  </div>
+</section>
+
+<section class="range" id="range">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Discover a world of flavour</h2>
+      <p>From the first drip in the morning to a cold cup in the afternoon heat — there's a Brew Haven cup for every hour.</p>
+    </div>
+    <div class="range-grid">
+      <div class="range-card">
+        <svg viewBox="0 0 100 100"><path d="M25 35 L30 70 C31 80, 40 87, 50 87 L60 87 C70 87, 79 80, 80 70 L85 35 Z" fill="#F6ECDC" stroke="#3F2417" stroke-width="4"/><ellipse cx="55" cy="35" rx="30" ry="7" fill="#E8CBA1" stroke="#3F2417" stroke-width="4"/><path d="M85 45 C100 45, 102 62, 88 65" fill="none" stroke="#3F2417" stroke-width="4"/></svg>
+        <h3>Hot Brews</h3>
+        <p>Lattes, drip, and cocoa — made to order, every time.</p>
+      </div>
+      <div class="range-card">
+        <svg viewBox="0 0 100 100"><rect x="30" y="25" width="40" height="60" rx="4" fill="#F6ECDC" stroke="#3F2417" stroke-width="4"/><line x1="35" y1="55" x2="65" y2="55" stroke="#C1652C" stroke-width="4"/><line x1="45" y1="20" x2="45" y2="30" stroke="#3F2417" stroke-width="3"/><line x1="55" y1="18" x2="55" y2="28" stroke="#3F2417" stroke-width="3"/></svg>
+        <h3>Iced &amp; Cold</h3>
+        <p>Cold brews and iced lattes for the warmer afternoons.</p>
+      </div>
+      <div class="range-card">
+        <svg viewBox="0 0 100 100"><path d="M50 15 C30 15, 22 35, 22 50 C22 68, 34 82, 50 82 C66 82, 78 68, 78 50 C78 35, 70 15, 50 15 Z" fill="#C1652C" stroke="#3F2417" stroke-width="4"/><path d="M50 15 C46 8, 52 2, 58 6" fill="none" stroke="#6E4429" stroke-width="4" stroke-linecap="round"/></svg>
+        <h3>Seasonal Specials</h3>
+        <p>Pumpkin spice is here for the rainy season — for now.</p>
+      </div>
+      <div class="range-card">
+        <svg viewBox="0 0 100 100"><rect x="28" y="30" width="44" height="50" rx="6" fill="#7A4A2B" stroke="#3F2417" stroke-width="4"/><path d="M32 30 C32 20, 68 20, 68 30" fill="none" stroke="#3F2417" stroke-width="4"/></svg>
+        <h3>Beans to Go</h3>
+        <p>Take our house blend home, whole or ground.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="recipes" id="recipes">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Make your afternoon with our recipes</h2>
+      <p>A few of the cups we love most this season — easy enough to try at home, too.</p>
+    </div>
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-art">
+          <svg viewBox="0 0 100 100"><path d="M25 35 L30 75 C31 84, 40 90, 50 90 L60 90 C70 90, 79 84, 80 75 L85 35 Z" fill="#F6ECDC" stroke="#3F2417" stroke-width="3.5"/><ellipse cx="55" cy="35" rx="30" ry="7" fill="#E8CBA1" stroke="#3F2417" stroke-width="3.5"/><path d="M40 22 C36 14, 44 8, 48 16" stroke="#C9A27A" stroke-width="3" fill="none"/><path d="M55 20 C51 12, 59 6, 63 14" stroke="#C9A27A" stroke-width="3" fill="none"/></svg>
+        </div>
+        <div class="recipe-body">
+          <h3>Pumpkin Spice Latte</h3>
+          <p>Espresso, steamed milk, real pumpkin, and a dusting of cinnamon.</p>
+          <div class="recipe-meta"><span>5 Steps</span><span>5 Ingredients</span></div>
+        </div>
+      </div>
+      <div class="recipe-card">
+        <div class="recipe-art">
+          <svg viewBox="0 0 100 100"><rect x="30" y="22" width="40" height="60" rx="4" fill="#F6ECDC" stroke="#3F2417" stroke-width="3.5"/><rect x="30" y="52" width="40" height="30" fill="#7A4A2B" opacity="0.85"/><line x1="46" y1="14" x2="46" y2="26" stroke="#3F2417" stroke-width="3"/><line x1="56" y1="12" x2="56" y2="24" stroke="#3F2417" stroke-width="3"/></svg>
+        </div>
+        <div class="recipe-body">
+          <h3>Maple Cold Brew</h3>
+          <p>Slow-steeped cold brew, a touch of maple, a splash of cream.</p>
+          <div class="recipe-meta"><span>4 Steps</span><span>3 Ingredients</span></div>
+        </div>
+      </div>
+      <div class="recipe-card">
+        <div class="recipe-art">
+          <svg viewBox="0 0 100 100"><path d="M25 40 L30 78 C31 85, 40 90, 48 90 L58 90 C68 90, 77 85, 78 78 L83 40 Z" fill="#6E4429" stroke="#3F2417" stroke-width="3.5"/><path d="M30 40 C30 30, 76 30, 76 40" fill="#F6ECDC" stroke="#3F2417" stroke-width="3.5"/></svg>
+        </div>
+        <div class="recipe-body">
+          <h3>Cinnamon Dolce Cocoa</h3>
+          <p>Dark cocoa, steamed milk, and a cinnamon dolce syrup swirl.</p>
+          <div class="recipe-meta"><span>4 Steps</span><span>4 Ingredients</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="story" id="story">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>From bean to neighborhood</h2>
+      <p>We're a small shop, so the things we care about are small too — but they add up.</p>
+    </div>
+    <div class="story-grid">
+      <div class="story-card">
+        <div class="kicker">SOURCING</div>
+        <h3>Beans from the Cordillera highlands</h3>
+        <p>We buy direct from a small grower cooperative a few hours north, and pay above the market rate for it.</p>
+        <span class="rm">Read more</span>
+      </div>
+      <div class="story-card">
+        <div class="kicker">REUSE</div>
+        <h3>₱10 off with your own cup</h3>
+        <p>Bring a tumbler and we'll knock a little off the price — every single time, no reason needed.</p>
+        <span class="rm">Read more</span>
+      </div>
+      <div class="story-card">
+        <div class="kicker">COMMUNITY</div>
+        <h3>Free table for student groups</h3>
+        <p>Reviewing for exams or running a club meeting? Our back table is yours on weekday afternoons.</p>
+        <span class="rm">Read more</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <blockquote>"We believe a great cup of coffee is really just a good excuse to stay a little longer."</blockquote>
+    <cite>— The Brew Haven Team</cite>
+  </div>
+</section>
+
+<section class="finder">
+  <div class="wrap">
+    <div class="finder-box">
+      <div>
+        <h2>Find your brew</h2>
+        <p>Answer two quick questions and we'll point you to your next favourite cup.</p>
+
+        <div class="finder-q">
+          <div class="qlabel">Hot or cold today?</div>
+          <div class="opt-row" data-group="temp">
+            <button class="opt" data-val="hot">Hot</button>
+            <button class="opt" data-val="cold">Cold</button>
+          </div>
+        </div>
+
+        <div class="finder-q">
+          <div class="qlabel">Sweet, or keep it simple?</div>
+          <div class="opt-row" data-group="taste">
+            <button class="opt" data-val="sweet">Sweet &amp; spiced</button>
+            <button class="opt" data-val="simple">Simple &amp; strong</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="finder-result" id="finderResult">
+        <svg viewBox="0 0 100 100"><path d="M25 35 L30 70 C31 80, 40 87, 50 87 L60 87 C70 87, 79 80, 80 70 L85 35 Z" fill="#F6ECDC" stroke="#3F2417" stroke-width="4"/><ellipse cx="55" cy="35" rx="30" ry="7" fill="#E8CBA1" stroke="#3F2417" stroke-width="4"/></svg>
+        <h3>Pick two answers</h3>
+        <p>We'll suggest a drink from the menu based on what you're in the mood for.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="visit" id="visit">
+  <div class="wrap">
+    <div>
+      <h2>Come sit with us.</h2>
+      <div class="visit-list" style="margin-top:28px;">
+        <div class="visit-row"><span class="d">Monday – Friday</span><span>7:00 AM – 9:00 PM</span></div>
+        <div class="visit-row"><span class="d">Saturday – Sunday</span><span>7:30 AM – 10:00 PM</span></div>
+        <div class="visit-row"><span class="d">Rainy days</span><span>We stay open a little later</span></div>
+      </div>
+    </div>
+    <div class="mapcard">
+      <div>
+        <div class="addr">123 Kalamansi Street,<br>Poblacion</div>
+        <div class="sub">Two minutes from the town plaza, next to the old bakery.</div>
+      </div>
+      <a href="#" class="btn-primary">Get directions</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a href="#top" class="brandmark">
+          <svg viewBox="0 0 500 500" style="width:38px;height:38px;">
+            <circle cx="250" cy="250" r="228" fill="#F6ECDC" stroke="#4A2C1D" stroke-width="6"/>
+            <path d="M 178 172 L 250 118 L 322 172" fill="none" stroke="#4A2C1D" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 168 200 L 178 268 C 180 284, 194 296, 210 296 L 290 296 C 306 296, 320 284, 322 268 L 332 200 Z" fill="#7A4A2B" stroke="#4A2C1D" stroke-width="10" stroke-linejoin="round"/>
+            <ellipse cx="250" cy="200" rx="82" ry="14" fill="#E8CBA1" stroke="#4A2C1D" stroke-width="10"/>
+          </svg>
+          <span class="bname">Brew Haven</span>
+        </a>
+        <p>A small café for slow mornings, rainy afternoons, and one good cup at a time.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="#3F2417" stroke-width="2"><path d="M15 8h-2a2 2 0 0 0-2 2v10M9 13h5"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="#3F2417" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="12" cy="12" r="3.5"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="#3F2417" stroke-width="2"><path d="M14 4v10.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 4c0 2.5 2 4.5 4 4.5"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>MENU</h4>
+        <a href="#range">Our Coffees</a>
+        <a href="#recipes">Recipes</a>
+        <a href="#story">Our Story</a>
+      </div>
+      <div class="foot-col">
+        <h4>VISIT</h4>
+        <a href="#visit">Hours &amp; Location</a>
+        <a href="#">Get Directions</a>
+        <a href="#">Order Ahead</a>
+      </div>
+      <div class="foot-col">
+        <h4>CONTACT</h4>
+        <a href="#">hello@brewhaven.coffee</a>
+        <a href="#">@brewhaven</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Brew Haven. All rights reserved.</span>
+      <span>Made with a warm cup nearby.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // time-based greeting
+  const h = new Date().getHours();
+  const greet = document.getElementById('greet');
+  greet.textContent = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : h < 21 ? 'Good evening' : 'Good night';
+
+  // coffee finder
+  const state = { temp: null, taste: null };
+  const result = document.getElementById('finderResult');
+  const suggestions = {
+    'hot-sweet': { name:'Pumpkin Spice Latte', desc:'Warm, spiced, and topped with cream — our seasonal favourite.' },
+    'hot-simple': { name:'Brew Haven Drip', desc:'Our house blend, brewed fresh every 20 minutes.' },
+    'cold-sweet': { name:'Maple Cold Brew', desc:'Slow-steeped cold brew with a touch of maple and cream.' },
+    'cold-simple': { name:'Iced Americano', desc:'Double espresso over ice, nothing else in the way.' }
+  };
+  document.querySelectorAll('.opt-row').forEach(row=>{
+    row.addEventListener('click', e=>{
+      const btn = e.target.closest('.opt');
+      if(!btn) return;
+      row.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+      btn.classList.add('sel');
+      state[row.dataset.group] = btn.dataset.val;
+      if(state.temp && state.taste){
+        const key = state.temp + '-' + state.taste;
+        const s = suggestions[key];
+        result.innerHTML = `
+          <svg viewBox="0 0 100 100"><path d="M25 35 L30 70 C31 80, 40 87, 50 87 L60 87 C70 87, 79 80, 80 70 L85 35 Z" fill="#F6ECDC" stroke="#3F2417" stroke-width="4"/><ellipse cx="55" cy="35" rx="30" ry="7" fill="#E8CBA1" stroke="#3F2417" stroke-width="4"/></svg>
+          <h3>${s.name}</h3>
+          <p>${s.desc}</p>`;
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
